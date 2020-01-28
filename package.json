@@ -1,0 +1,24 @@
+{
+  "name": "jaeger-tracer",
+  "version": "1.0.0",
+  "description": "jaeger tracing lib for appquarium",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infrasrc/jaeger-tracer.git"
+  },
+  "author": "Shani Heiman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/infrasrc/jaeger-tracer/issues"
+  },
+  "homepage": "https://github.com/infrasrc/jaeger-tracer#readme",
+  "dependencies": {
+    "jaeger-client": "^3.17.1",
+    "opentracing": "^0.14.4",
+    "prom-client": "^11.5.3"
+  }
+}
