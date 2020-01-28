@@ -1,0 +1,13 @@
+{
+  "config": {
+    "serviceName": "unknown",
+    "sampler": {
+      "type": "const",
+      "param": 1
+    },
+    "reporter": {
+      "collectorEndpoint": "",
+      "logSpans": true
+    }
+  }
+}
