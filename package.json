@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/infrasrc/jaeger-tracer#readme",
   "dependencies": {
+    "config": "^3.2.5",
     "jaeger-client": "^3.17.1",
     "opentracing": "^0.14.4",
     "prom-client": "^11.5.3"
