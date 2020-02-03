@@ -41,7 +41,7 @@ const initGlboalTracer = (config, logger, metrics) => {
     const options = {
         metrics: metrics || new MetricsFactory(config.serviceName)
     };
-    if (logger) options.logger = options;
+    if (logger) options.logger = logger;
     const tracer = initJaegerTracer(config, options);
     initGlobalTracer(tracer);
     return tracer;
