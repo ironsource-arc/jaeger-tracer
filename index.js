@@ -7,7 +7,7 @@ const { extendDeep, loadFileConfigs } = config.util;
 const ourConfigDir = path.join(__dirname, 'config');
 const defaultConfig = loadFileConfigs(ourConfigDir);
 const { initTracer: initJaegerTracer, PrometheusMetricsFactory } = jaegerClient;
-const { initGlobalTracer } = opentracing;
+const { initGlobalTracer, Tags } = opentracing;
 
 class MetricsFactory {
     constructor(serviceName, options) {
@@ -47,10 +47,18 @@ const initGlboalTracer = (config, logger, metrics) => {
     return tracer;
 };
 
+const logError = (span, error) => {
+    span.setTag(Tags.ERROR, true);
+    span.log({
+        event: 'error',
+        'error.object': error,
+    });
+}
 
 module.exports = {
     initGlboalTracer,
     opentracing,
     prometheusClient,
-    jaegerClient
+    jaegerClient,
+    logError
 };
