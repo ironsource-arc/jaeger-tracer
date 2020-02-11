@@ -55,10 +55,15 @@ const logError = (span, error) => {
     });
 }
 
+const tagWarning = (span, msg) => {
+    span.setTag('warning', msg);
+}
+
 module.exports = {
     initGlboalTracer,
     opentracing,
     prometheusClient,
     jaegerClient,
-    logError
+    logError,
+    tagWarning
 };
