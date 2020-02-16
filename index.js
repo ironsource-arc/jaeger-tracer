@@ -36,12 +36,21 @@ class MetricsFactory {
     }
 }
 
+class Logger {
+    info(msg){
+        console.info(msg);
+    }
+    error(msg){
+        console.error(msg);
+    };
+}
+
 const initGlboalTracer = (config, logger, metrics) => {
     config = extendDeep(defaultConfig.config, config);
     const options = {
-        metrics: metrics || new MetricsFactory(config.serviceName)
+        metrics: metrics || new MetricsFactory(config.serviceName),
+        logger: logger || new Logger()
     };
-    if (logger) options.logger = logger;
     const tracer = initJaegerTracer(config, options);
     initGlobalTracer(tracer);
     return tracer;
