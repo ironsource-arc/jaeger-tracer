@@ -56,7 +56,7 @@ const initGlboalTracer = (config, logger, metrics) => {
     return tracer;
 };
  
-const logError = (span, errorObject, message, stack) => {
+const logError = (span, errorObject, message, stack, markTraced = true) => {
     if ((!span) || (!span.setTag instanceof Function)) return;
     if (!span.log instanceof Function) return;
     if(errorObject.traced) return;         
@@ -64,7 +64,7 @@ const logError = (span, errorObject, message, stack) => {
         span.setTag(Tags.ERROR, true);
     }
     span.log({ 'event': 'error', 'error.object': errorObject, 'message': message || errorObject.message, 'stack': stack || errorObject.stack });
-    errorObject.traced = true;
+    errorObject.traced = markTraced;
 }
 
 const tagWarning = (span, msg) => {
