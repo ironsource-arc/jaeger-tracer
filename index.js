@@ -55,15 +55,18 @@ const initGlboalTracer = (config, logger, metrics) => {
     initGlobalTracer(tracer);
     return tracer;
 };
-
-const logError = (span, error) => {
-    if(!span._tags.find(t=>t.key==='error')) {
+ 
+const logError = (span, errorObject, message, stack) => {
+    if ((!span) || (!span.setTag instanceof Function)) return;
+    if (!span.log instanceof Function) return;
+    if(error.traced) {
+        delete error.traced;    
+        return;
+    }            
+    if(!span._tags.find(t => t.key === 'error')) {
         span.setTag(Tags.ERROR, true);
     }
-    span.log({
-        event: 'error',
-        'error.object': error,
-    });
+    span.log({ 'event': 'error', 'error.object': errorObject, 'message': message || errorObject.message, 'stack': stack || errorObject.stack });
 }
 
 const tagWarning = (span, msg) => {
