@@ -64,6 +64,7 @@ const logError = (span, errorObject, message, stack) => {
         span.setTag(Tags.ERROR, true);
     }
     span.log({ 'event': 'error', 'error.object': errorObject, 'message': message || errorObject.message, 'stack': stack || errorObject.stack });
+    errorObject.traced = true;
 }
 
 const tagWarning = (span, msg) => {
