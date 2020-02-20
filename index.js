@@ -59,8 +59,8 @@ const initGlboalTracer = (config, logger, metrics) => {
 const logError = (span, errorObject, message, stack) => {
     if ((!span) || (!span.setTag instanceof Function)) return;
     if (!span.log instanceof Function) return;
-    if(error.traced) {
-        delete error.traced;    
+    if(errorObject.traced) {
+        delete errorObject.traced;    
         return;
     }            
     if(!span._tags.find(t => t.key === 'error')) {
