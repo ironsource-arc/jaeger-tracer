@@ -6,7 +6,8 @@ const config = require('config');
 const { extendDeep, loadFileConfigs } = config.util;
 const ourConfigDir = path.join(__dirname, 'config');
 const defaultConfig = loadFileConfigs(ourConfigDir);
-const { initTracer: initJaegerTracer, PrometheusMetricsFactory } = jaegerClient;
+const { initTracer: initJaegerTracer, initTracerFromEnv, PrometheusMetricsFactory } = jaegerClient;
+
 const { initGlobalTracer, Tags } = opentracing;
 
 class MetricsFactory {
@@ -51,7 +52,7 @@ const initGlboalTracer = (config, logger, metrics) => {
         metrics: metrics || new MetricsFactory(config.serviceName),
         logger: logger || new Logger()
     };
-    const tracer = initJaegerTracer(config, options);
+    const tracer = initTracerFromEnv(config, options);
     initGlobalTracer(tracer);
     return tracer;
 };
@@ -62,6 +63,10 @@ const logError = (span, errorObject, message, stack, markTraced = true) => {
     if(errorObject.traced) return;         
     if(!span._tags.find(t => t.key === 'error')) {
         span.setTag(Tags.ERROR, true);
+    }
+    //always sample on error.    
+    if(!span._tags.find(t => t.key === 'sampling')) {
+        span.setTag(Tags.SAMPLING_PRIORITY, 1);
     }
     span.log({ 'event': 'error', 'error.object': errorObject, 'message': message || errorObject.message, 'stack': stack || errorObject.stack });
     errorObject.traced = markTraced;
