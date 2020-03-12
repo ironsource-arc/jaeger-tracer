@@ -7,7 +7,6 @@ const { extendDeep, loadFileConfigs } = config.util;
 const ourConfigDir = path.join(__dirname, 'config');
 const defaultConfig = loadFileConfigs(ourConfigDir);
 const { initTracer: initJaegerTracer, initTracerFromEnv, PrometheusMetricsFactory } = jaegerClient;
-
 const { initGlobalTracer, Tags } = opentracing;
 
 class MetricsFactory {
@@ -46,17 +45,32 @@ class Logger {
     };
 }
 
-const initGlboalTracer = (config, logger, metrics) => {
+const initGlboalTracer = (config, options, logger, metrics) => {
     config = extendDeep(defaultConfig.config, config);
-    const options = {
+    const defaultOptions = {
         metrics: metrics || new MetricsFactory(config.serviceName),
         logger: logger || new Logger()
     };
+    options = Object.assign(options || {}, defaultOptions);
+    
+    const tracer = initJaegerTracer(config, options);
+    initGlobalTracer(tracer);
+    return tracer;
+};
+
+const initGlboalTracerFromEnv = (config, options, logger, metrics) => {
+    config = extendDeep(defaultConfig.config, config);
+    const defaultOptions = {
+        metrics: metrics || new MetricsFactory(config.serviceName),
+        logger: logger || new Logger()
+    };
+    options = Object.assign(options || {}, defaultOptions);
+    
     const tracer = initTracerFromEnv(config, options);
     initGlobalTracer(tracer);
     return tracer;
 };
- 
+
 const logError = (span, errorObject, message, stack, markTraced = true) => {
     if ((!span) || (!span.setTag instanceof Function)) return;
     if (!span.log instanceof Function) return;
@@ -78,6 +92,7 @@ const tagWarning = (span, msg) => {
 
 module.exports = {
     initGlboalTracer,
+    initGlboalTracerFromEnv,
     opentracing,
     prometheusClient,
     jaegerClient,
